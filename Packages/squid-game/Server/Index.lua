@@ -1,5 +1,3 @@
-World.SpawnDefaultSun()
-
 -- local maingameloop;
 --Global Variables
 local Gamemode = 1
@@ -8,11 +6,11 @@ local Gamemodes = {
 }
 local PlayersInMatch = {}
 local PlayersSpectating = {}
-
+local PlayersWonRound = {}
 
 --Global Functions
 
--- function SpectateNe
+-- function SpectateNewPlayer
 
 function SpawnPlayer(player) 
     -- Spawns a Character at position 0, 0, 0 with default's constructor parameters
@@ -54,47 +52,16 @@ end
 
 function CheckIfPlayerHasMoved()
     for i, character in ipairs(PlayersInMatch) do
-        print("Player " .. i)
         local PlayersLocation = character:GetLocation()
+        local PlayersLastPosition = PlayersLastPos[character:GetPlayer():GetSteamID()]
+        print(PlayersLastPosition)
+        if PlayersLastPosition == nil then
+            PlayersLastPosition = false
+        end
 
         --Were gonna send a raycast to see if the player is visible
-        --Also Debugging
-        -- Makes a trace with the 3D Location and it's direction multiplied by 5000
-        -- Meaning it will trace 5000 units in that direction
-        local trace_max_distance = 5000
-
-        local start_location = GirlDollHeadPosition
-        local end_location = PlayersLocation
-        local trace_results = Client.Trace(start_location, end_location, CollisionChannel.WorldStatic | CollisionChannel.PhysicsBody, false, true, false, {}, true))
-
-            -- If hit something draws a Debug Point at the location
-        if (trace_results.Success) then
-
-            -- Makes the point Red or Green if hit an Actor
-            local color = Color(1, 0, 0) -- Red
-
-            if (trace_results.Entity) then
-                color = Color(0, 1, 0) -- Green
-
-                -- Here you can check which actor you hit like
-                -- if (trace_result.Entity:GetType() == "Character") then ...
-            end
-
-            -- Draws a Debug Point at the Hit location for 5 seconds with size 10
-            Client.DrawDebugPoint(trace_results.Location, color, 5, 10)
-        end
-        -- print(i .. " " .. NanosUtils.Dump(PlayersLocation))
-
-        local PlayersLastPosition = PlayersLastPos[character:GetPlayer():GetSteamID()]
-
-        if PlayersLastPosition then
-            if PlayersLastPosition ~= PlayersLocation then
-                print("Player Has Moved!!")
-                KillPlayer(i, character)
-            end
-        else 
-            PlayersLastPos[character:GetPlayer():GetSteamID()] = PlayersLocation
-        end
+        Events.CallRemote("CheckIfPlayerHasMoved", character:GetPlayer(), 
+        {startpos = GirlDollHeadPosition + Vector(-500, 0, 100), endpos = PlayersLocation + Vector(100, 0, 0), PlayersLoc = PlayersLocation, PlayersLastPos = PlayersLastPosition, character = character, index = i}, true)
 
     end
 end
@@ -147,7 +114,7 @@ function ChangeLight()
 end
 
 function StartEpisode1()
-    GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "Squid_Game::Head_Doll", CollisionType.StaticOnly, false, false)
+    GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "squid-game::Head_Doll", CollisionType.StaticOnly, false, false)
     GirlDollHead:SetScale(Vector(200,200,200))
 
 
@@ -172,10 +139,21 @@ function Gamemode1Loop()
     end
 end
 
+Server.Subscribe("PlayersLastLocation", function(character, PlayersLoc) 
+    PlayersLastPos[character:GetPlayer():GetSteamID()] = PlayersLoc
+    print("In Last Location")
+end)
+
 --End of gamemode 1
 
 --SetVars
 Gamemodes[1] = Gamemode1Loop
+
+Server.Subscribe("KillPlayer", function(index, character)
+    print("In kill moment")
+    -- TODO: Check if has authority
+    KillPlayer(index, character)
+end)
 
 -- Main Server Loop
 Server.Subscribe("Tick", function(delta)

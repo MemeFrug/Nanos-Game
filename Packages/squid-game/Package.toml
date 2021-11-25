@@ -20,5 +20,5 @@
     ]
     # asset packs requirements
     assets_requirements = [
-        "Squid_Game",
+        "squid-game",
     ]

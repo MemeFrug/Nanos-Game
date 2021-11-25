@@ -123,3 +123,32 @@
 [2021-11-25 13:34:42] Inilializing System Manager
 [2021-11-25 13:34:42] Suspend inhibited
 [2021-11-25 14:07:18] Suspend inhibit released
+
+
+[2021-11-25 17:25:50] Inilializing System Manager
+[2021-11-25 17:25:50] Suspend inhibited
+[2021-11-25 17:26:52] Suspend inhibit released
+
+
+[2021-11-25 17:27:21] Inilializing System Manager
+[2021-11-25 17:27:21] Suspend inhibited
+[2021-11-25 17:27:23] Suspend inhibit released
+
+
+[2021-11-25 17:27:49] Inilializing System Manager
+[2021-11-25 17:27:49] Suspend inhibited
+[2021-11-25 17:28:09] Suspend inhibit released
+
+
+[2021-11-25 17:28:15] Inilializing System Manager
+[2021-11-25 17:28:15] Suspend inhibited
+
+
+[2021-11-25 17:31:44] Inilializing System Manager
+[2021-11-25 17:31:44] Suspend inhibited
+[2021-11-25 17:38:45] Suspend inhibit released
+
+
+[2021-11-25 18:03:02] Inilializing System Manager
+[2021-11-25 18:03:02] Suspend inhibited
+[2021-11-25 21:29:53] Suspend inhibit released

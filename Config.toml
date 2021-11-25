@@ -38,7 +38,7 @@
         
     ]
     # default startup map
-    map =               "squid_game::Map1"
+    map =               "squid-game::Map1"
     # banned IPs
     banned_ips = [
         
