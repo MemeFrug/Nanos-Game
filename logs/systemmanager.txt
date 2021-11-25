@@ -1,0 +1,125 @@
+
+
+[2021-10-27 16:33:39] Inilializing System Manager
+[2021-10-27 16:33:39] Suspend inhibited
+[2021-10-27 16:33:42] Suspend inhibit released
+
+
+[2021-10-27 16:36:11] Inilializing System Manager
+[2021-10-27 16:36:11] Suspend inhibited
+[2021-10-27 17:04:41] Suspend inhibit released
+
+
+[2021-10-27 17:04:50] Inilializing System Manager
+[2021-10-27 17:04:50] Suspend inhibited
+
+
+[2021-10-27 17:23:15] Inilializing System Manager
+[2021-10-27 17:23:15] Suspend inhibited
+[2021-10-27 17:23:52] Suspend inhibit released
+
+
+[2021-10-27 17:23:57] Inilializing System Manager
+[2021-10-27 17:23:57] Suspend inhibited
+[2021-10-27 18:36:38] Suspend inhibit released
+
+
+[2021-10-27 18:36:49] Inilializing System Manager
+[2021-10-27 18:36:49] Suspend inhibited
+
+
+[2021-10-27 18:38:00] Inilializing System Manager
+[2021-10-27 18:38:00] Suspend inhibited
+
+
+[2021-10-27 18:38:16] Inilializing System Manager
+[2021-10-27 18:38:16] Suspend inhibited
+[2021-10-27 18:40:53] Suspend inhibit released
+
+
+[2021-10-27 18:43:42] Inilializing System Manager
+[2021-10-27 18:43:42] Suspend inhibited
+[2021-10-27 18:44:09] Suspend inhibit released
+
+
+[2021-10-27 18:45:04] Inilializing System Manager
+[2021-10-27 18:45:04] Suspend inhibited
+[2021-10-27 18:45:54] Suspend inhibit released
+
+
+[2021-11-21 10:05:18] Inilializing System Manager
+[2021-11-21 10:05:18] Suspend inhibited
+[2021-11-21 10:08:14] Suspend inhibit released
+
+
+[2021-11-21 10:08:19] Inilializing System Manager
+[2021-11-21 10:08:19] Suspend inhibited
+[2021-11-21 10:08:26] Suspend inhibit released
+
+
+[2021-11-21 10:12:55] Inilializing System Manager
+[2021-11-21 10:12:55] Suspend inhibited
+[2021-11-21 10:13:12] Suspend inhibit released
+
+
+[2021-11-21 10:16:04] Inilializing System Manager
+[2021-11-21 10:16:04] Suspend inhibited
+[2021-11-21 10:16:09] Suspend inhibit released
+
+
+[2021-11-21 10:16:29] Inilializing System Manager
+[2021-11-21 10:16:29] Suspend inhibited
+
+
+[2021-11-21 10:17:13] Inilializing System Manager
+[2021-11-21 10:17:13] Suspend inhibited
+[2021-11-21 10:17:42] Suspend inhibit released
+
+
+[2021-11-21 10:17:47] Inilializing System Manager
+[2021-11-21 10:17:47] Suspend inhibited
+[2021-11-21 10:20:00] Suspend inhibit released
+
+
+[2021-11-21 10:28:24] Inilializing System Manager
+[2021-11-21 10:28:24] Suspend inhibited
+[2021-11-21 10:43:53] Suspend inhibit released
+
+
+[2021-11-21 10:43:57] Inilializing System Manager
+[2021-11-21 10:43:57] Suspend inhibited
+
+
+[2021-11-21 11:35:35] Inilializing System Manager
+[2021-11-21 11:35:35] Suspend inhibited
+[2021-11-21 13:21:58] Suspend inhibit released
+
+
+[2021-11-21 13:37:19] Inilializing System Manager
+[2021-11-21 13:37:19] Suspend inhibited
+[2021-11-21 14:58:39] Suspend inhibit released
+
+
+[2021-11-23 20:22:04] Inilializing System Manager
+[2021-11-23 20:22:04] Suspend inhibited
+[2021-11-23 21:09:11] Suspend inhibit released
+
+
+[2021-11-24 17:44:49] Inilializing System Manager
+[2021-11-24 17:44:49] Suspend inhibited
+[2021-11-24 22:50:37] Suspend inhibit released
+
+
+[2021-11-25 13:26:21] Inilializing System Manager
+[2021-11-25 13:26:21] Suspend inhibited
+[2021-11-25 13:32:30] Suspend inhibit released
+
+
+[2021-11-25 13:33:32] Inilializing System Manager
+[2021-11-25 13:33:32] Suspend inhibited
+[2021-11-25 13:34:25] Suspend inhibit released
+
+
+[2021-11-25 13:34:42] Inilializing System Manager
+[2021-11-25 13:34:42] Suspend inhibited
+[2021-11-25 14:07:18] Suspend inhibit released

@@ -1,0 +1,11 @@
+"InstallScript"
+{
+	"Firewall"
+	{
+		"nanos world dedicated server"		"%INSTALLDIR%\\NanosWorldServer.exe"
+	}
+}
+"kvsignatures"
+{
+	"InstallScript"		"05573156cc59c4ba38d31ee5adedf7f5bf7ced60125c9fe04810d92e9a3df2576f7597202c0209395c55f436a6f6c8930a0d908fc020e4acc40e3fa3f8eaa88ee8e7fcc350b7a528437426635231a3e0b8b5355ebf650fa1f17173157b0d9a266070eaf82192c12b2eb3464cabc66eb1b5ea64978ffd3fe7b8bd50888aa33a16"
+}

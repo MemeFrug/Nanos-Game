@@ -1,0 +1,16 @@
+/* Packages\squid-game\Client\UI\style.css */
+
+.RLGLText {
+    padding-top: 5em; 
+    position: absolute;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+#Light {
+    text-align: center;
+    color: red;
+    position: relative;
+    font-size: 4em;
+}
