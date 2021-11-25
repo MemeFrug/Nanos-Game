@@ -1,11 +1,9 @@
 --spawns the ui in game
 main_hud = WebUI("Main HUD", "file:///UI/index.html")
 
-Events.Subscribe("WhatLight", function(Light)
+Events.Subscribe("DisplayLight", function(Light)
 
-    main_hud:CallEvent("ChangeLight", Light)
-
-    Package.Log(Light)
+    main_hud:CallEvent("DisplayLight", Light)
 end)
 
 Events.Subscribe("KillPlayerBomb", function (Pos)

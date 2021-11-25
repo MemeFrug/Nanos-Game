@@ -1,3 +1,4 @@
+World.SpawnDefaultSun()
 
 -- local maingameloop;
 --Global Variables
@@ -40,11 +41,11 @@ local RedLightKillDelay = 1300
 local Light = false
 local StartChecking = false
 
-local PlayersLastPos = {}
+local GirlDollHead;
 
--- Doll Test
-GirlDollHead = Prop(Vector(7980, 90, 0), Rotator(0, -90, 0), "Squid_Game::Head_Doll", CollisionType.StaticOnly, false, false)
-GirlDollHead:SetScale(Vector(200,200,200))
+local GirlDollHeadPosition = Vector(7980, 90, 0)
+
+local PlayersLastPos = {}
 
 function GetLightRandomTime()
     math.randomseed(os.time())
@@ -55,6 +56,33 @@ function CheckIfPlayerHasMoved()
     for i, character in ipairs(PlayersInMatch) do
         print("Player " .. i)
         local PlayersLocation = character:GetLocation()
+
+        --Were gonna send a raycast to see if the player is visible
+        --Also Debugging
+        -- Makes a trace with the 3D Location and it's direction multiplied by 5000
+        -- Meaning it will trace 5000 units in that direction
+        local trace_max_distance = 5000
+
+        local start_location = GirlDollHeadPosition
+        local end_location = PlayersLocation
+        local trace_results = Client.Trace(start_location, end_location, CollisionChannel.WorldStatic | CollisionChannel.PhysicsBody, false, true, false, {}, true))
+
+            -- If hit something draws a Debug Point at the location
+        if (trace_results.Success) then
+
+            -- Makes the point Red or Green if hit an Actor
+            local color = Color(1, 0, 0) -- Red
+
+            if (trace_results.Entity) then
+                color = Color(0, 1, 0) -- Green
+
+                -- Here you can check which actor you hit like
+                -- if (trace_result.Entity:GetType() == "Character") then ...
+            end
+
+            -- Draws a Debug Point at the Hit location for 5 seconds with size 10
+            Client.DrawDebugPoint(trace_results.Location, color, 5, 10)
+        end
         -- print(i .. " " .. NanosUtils.Dump(PlayersLocation))
 
         local PlayersLastPosition = PlayersLastPos[character:GetPlayer():GetSteamID()]
@@ -87,7 +115,7 @@ function ChangeLight()
 
     if Light then
         Light = false
-        Events.BroadcastRemote("WhatLight", Light)
+        Events.BroadcastRemote("DisplayLight", Light)
         print(Light)
         Timer.SetTimeout(function() StartChecking = true end, RedLightKillDelay)
 
@@ -98,7 +126,7 @@ function ChangeLight()
         StartChecking = false
         Light = true
         print(Light)
-        Events.BroadcastRemote("WhatLight", Light)
+        Events.BroadcastRemote("DisplayLight", Light)
 
         --Rotate the dolls head back
         GirlDollHead:RotateTo(Rotator(0, -90, 0), 5)
@@ -119,8 +147,17 @@ function ChangeLight()
 end
 
 function StartEpisode1()
-    local RandomTime = GetLightRandomTime()
-    Timer.SetTimeout(ChangeLight, RandomTime)
+    GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "Squid_Game::Head_Doll", CollisionType.StaticOnly, false, false)
+    GirlDollHead:SetScale(Vector(200,200,200))
+
+
+
+    print("Starting Gamemode Redlight greenlight in 10 seconds")
+    Events.BroadcastRemote("DisplayLight", "Starting In 10 Seconds")
+    Timer.SetTimeout(function ()
+
+        ChangeLight()
+    end, 10000)
 end
 
 function EndEpisode1()

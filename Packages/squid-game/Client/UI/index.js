@@ -1,11 +1,10 @@
 // Register for "MyEvent" from Lua
-Events.Subscribe("ChangeLight", function(param) {
-    console.log(param);
-    if (param) {
-        document.getElementById("Light").style.color = "green"
-        document.getElementById("Light").innerHTML = "GREEN LIGHT"
-    }else {
-        document.getElementById("Light").style.color = "red"
-        document.getElementById("Light").innerHTML = "RED LIGHT"
+Events.Subscribe("DisplayLight", function(param) {
+
+    if (param != "green" || param != "red") {
+        document.getElementById("Light").innerHTML = param
+        return
     }
+    document.getElementById("Light").style.color = param
+    document.getElementById("Light").innerHTML = `${param.toUpperCase()} LIGHT`
 })
