@@ -54,14 +54,14 @@ function CheckIfPlayerHasMoved()
     for i, character in ipairs(PlayersInMatch) do
         local PlayersLocation = character:GetLocation()
         local PlayersLastPosition = PlayersLastPos[character:GetPlayer():GetSteamID()]
-        print(PlayersLastPosition)
         if PlayersLastPosition == nil then
             PlayersLastPosition = false
         end
 
         --Were gonna send a raycast to see if the player is visible
         Events.CallRemote("CheckIfPlayerHasMoved", character:GetPlayer(), 
-        {startpos = GirlDollHeadPosition + Vector(-500, 0, 100), endpos = PlayersLocation + Vector(100, 0, 0), PlayersLoc = PlayersLocation, PlayersLastPos = PlayersLastPosition, character = character, index = i}, true)
+        {startpos = GirlDollHeadPosition + Vector(-200, 0, 300), endpos = PlayersLocation + Vector(100, 0, 0), PlayersLoc = PlayersLocation, 
+        PlayersLastPos = PlayersLastPosition, character = character, index = i}, true)
 
     end
 end
@@ -116,15 +116,17 @@ end
 function StartEpisode1()
     GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "squid-game::Head_Doll", CollisionType.StaticOnly, false, false)
     GirlDollHead:SetScale(Vector(200,200,200))
+    --Place invisible wall
+    InvisibleWallStart = Prop(Vector(-310.0, 0, 24), Rotator(), "squid-game::Invisible_Barrier", CollisionType.StaticOnly, false, false)
 
 
+    print("Starting Gamemode Redlight greenlight in 5 seconds")
+    Events.BroadcastRemote("DisplayLight", "Starting In 5 Seconds")
 
-    print("Starting Gamemode Redlight greenlight in 10 seconds")
-    Events.BroadcastRemote("DisplayLight", "Starting In 10 Seconds")
     Timer.SetTimeout(function ()
 
         ChangeLight()
-    end, 10000)
+    end, 5000)
 end
 
 function EndEpisode1()
@@ -139,9 +141,8 @@ function Gamemode1Loop()
     end
 end
 
-Server.Subscribe("PlayersLastLocation", function(character, PlayersLoc) 
-    PlayersLastPos[character:GetPlayer():GetSteamID()] = PlayersLoc
-    print("In Last Location")
+Events.Subscribe("PlayersLastLocation", function(player, PlayersLoc)
+    PlayersLastPos[player:GetSteamID()] = PlayersLoc
 end)
 
 --End of gamemode 1
@@ -149,10 +150,13 @@ end)
 --SetVars
 Gamemodes[1] = Gamemode1Loop
 
-Server.Subscribe("KillPlayer", function(index, character)
-    print("In kill moment")
+Events.Subscribe("KillPlayer", function(player, index)
     -- TODO: Check if has authority
-    KillPlayer(index, character)
+
+    --Check if player is possessing anything
+    if (player:GetControlledCharacter()) then
+        KillPlayer(index, player:GetControlledCharacter())
+    end
 end)
 
 -- Main Server Loop

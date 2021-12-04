@@ -17,7 +17,9 @@ Events.Subscribe("KillPlayerBomb", function (Pos)
 end)
 
 Events.Subscribe("CheckIfPlayerHasMoved", function (params, debug)
-    
+    print(params.character:GetPlayer())
+
+
     local trace_results = Client.Trace(params.startpos, params.endpos, CollisionChannel.Pawn | CollisionChannel.WorldStatic | CollisionChannel.PhysicsBody, false, true, false, {}, true)
 
     -- If hit something draws a Debug Point at the location
@@ -42,11 +44,11 @@ Events.Subscribe("CheckIfPlayerHasMoved", function (params, debug)
         print(params.PlayersLastPos)
         if (params.PlayersLastPos) then
             if (params.PlayersLastPos ~= params.PlayersLoc) then
-                Events.CallRemote("KillPlayer", params.index, params.character)
+                Events.CallRemote("KillPlayer", params.index)
             end
         else 
             print("Calling PlayersLastLocation")
-            Events.CallRemote("PlayersLastLocation", params.character, params.PlayersLoc)
+            Events.CallRemote("PlayersLastLocation", params.PlayersLoc)
         end 
     end
 end)

@@ -38,3 +38,11 @@
 [2021-11-25 13:26:21] CCMInterface::OnNetworkDeviceStateChange -- Start connecting to Steam
 [2021-11-25 13:26:21] CCMInterface::OnNetworkDeviceStateChange -- Saw device up (192.168.0.18)
 [2021-11-25 13:26:21] CCMInterface::OnNetworkDeviceStateChange -- Start connecting to Steam
+
+
+[2021-12-05 00:00:31] CCMInterface::OnNetworkDeviceStateChange -- Saw device up (192.168.0.20)
+[2021-12-05 00:00:31] CCMInterface::OnNetworkDeviceStateChange -- Start connecting to Steam
+[2021-12-05 00:00:31] CCMInterface::OnNetworkDeviceStateChange -- Saw device up (192.168.0.20)
+[2021-12-05 00:00:31] CCMInterface::OnNetworkDeviceStateChange -- Start connecting to Steam
+[2021-12-05 00:00:31] CCMInterface::OnNetworkDeviceStateChange -- Saw device up (192.168.0.20)
+[2021-12-05 00:00:31] CCMInterface::OnNetworkDeviceStateChange -- Start connecting to Steam

@@ -701,3 +701,15 @@
 [2021-11-25 21:29:53] [3,2] LogOff()
 [2021-11-25 21:29:53] [2,2] AsyncDisconnect( bDontWaitOnTCPShutdown: false )
 [2021-11-25 21:29:53] [2,2] Log session ended
+
+
+[2021-12-05 00:00:31] IPv6 HTTP connectivity test (ipv6check-http.steamcontent.com / 0.0.0.0:80 (0.0.0.0:80)) - TIMEOUT
+[2021-12-05 00:00:31] IPv6 UDP connectivity test (ipv6check-udp.steamcontent.com) - FAILED, no addresses resolved
+[2021-12-05 00:00:36] [0,0] SetSteamID( [A:1:0:0] )
+[2021-12-05 00:00:36] [0,0] Server says 50% of connections should be websockets, we rolled 60 - using UDP as default.
+[2021-12-05 00:00:36] [1,2] Connect() starting connection (eNetQOSLevelMedium, 103.10.125.165:27020, UDP)
+[2021-12-05 00:00:37] [1,2] ConnectionCompleted() (103.10.125.164:27017, UDP) local address (0.0.0.0:49427)
+[2021-12-05 00:00:37] [1,2] RecvMsgClientLogOnResponse() : [A:1:462336001:19035] 'OK'
+[2021-12-05 01:06:22] [3,2] LogOff()
+[2021-12-05 01:06:22] [2,2] AsyncDisconnect( bDontWaitOnTCPShutdown: false )
+[2021-12-05 01:06:22] [2,2] Log session ended
