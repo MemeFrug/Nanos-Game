@@ -3,6 +3,9 @@ World.SpawnDefaultSun()
 --spawns the ui in game
 main_hud = WebUI("Main HUD", "file:///UI/index.html")
 
+--SoundsPlaying
+local SoundsPlaying = {}
+
 Events.Subscribe("DisplayLight", function(Light)
 
     main_hud:CallEvent("DisplayLight", Light)
@@ -26,7 +29,7 @@ Events.Subscribe("CheckIfPlayerHasMoved", function (params, debug)
     if (trace_results.Success) then
         print("In Success")
         
-        -- if (debug == false) then return end
+        if (debug == false) then return end
         -- Makes the point Red or Green if hit an Actor
         local color = Color(1, 0, 0) -- Red
 
@@ -50,5 +53,16 @@ Events.Subscribe("CheckIfPlayerHasMoved", function (params, debug)
             print("Calling PlayersLastLocation")
             Events.CallRemote("PlayersLastLocation", params.PlayersLoc)
         end 
+    end
+end)
+
+Events.Subscribe("PlaySound", function (soundPath, PutIsPlaying)
+    print(soundPath)
+    local newsound = Sound(Vector(),soundPath,true,true,SoundType.SFX)
+
+    if (PutIsPlaying) then
+        table.insert( SoundsPlaying, newsound)
+    else
+        newsound:Play()
     end
 end)

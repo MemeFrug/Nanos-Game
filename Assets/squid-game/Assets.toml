@@ -1,0 +1,60 @@
+# asset pack configurations
+[asset_pack]
+    # asset pack name
+    name =              "squid-game"
+    # contributors
+    author =            "MemeFrug"
+    # version
+    version =           "0.1.0"
+    # image URL
+    image =             ""
+    # unreal engine folder - the name of the root folder (the one inside UnrealProject/Content/) which the assets will have references to each other
+    unreal_folder =     "Squid_Game"
+
+# assets files
+[assets]
+    # maps
+    [assets.maps]
+        Map1 = "Map_Assets/Maps/Map1"
+
+    # static meshes
+    [assets.static_meshes]
+        Body_Doll = "Doll_Assets/Merged_Body_Doll"
+        Cone = "Map_Assets/Simple_Geometry/Cone"
+        Cube = "Map_Assets/Simple_Geometry/Cube"
+        Cylinder = "Map_Assets/Simple_Geometry/Cylinder"
+        Dead_Tree = "Map_Assets/StaticMeshes/fbx_Obj3d66-598285-1-365"
+        Head_Doll = "Doll_Assets/Head_Doll"
+        Invisible_Barrier = "Map_Assets/StaticMeshes/Invisible_Barrier"
+        Plane = "Map_Assets/Simple_Geometry/Plane"
+        Sphere = "Map_Assets/Simple_Geometry/Sphere"
+        StaticMesh = "Map_Assets/StaticMeshes/StaticMesh"
+
+    # skeletal meshes
+    [assets.skeletal_meshes]
+        # SK_Better_Man = "Characters/SK_BetterMan_03"
+        # ...
+
+    # sounds
+    [assets.sounds]
+        stopSound = "Audio/stopSound.ogg"
+
+    # animations
+    [assets.animations]
+        # A_Character_Jump = "Animations/A_Character_Jump"
+        # ...
+
+    # particles
+    [assets.particles]
+        # P_Big_Explosion = "Particles/P_Big_Explosion"
+        # ...
+
+    # materials
+    [assets.materials]
+        # M_Red_Textured = "Materials/M_Red_Textured"
+        # ...
+
+    # other assets (for not yet categorized ones)
+    [assets.others]
+        # A_Audio_Rifle_Fire = "Audios/A_Audio_Rifle_Fire_03"
+        # ...

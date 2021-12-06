@@ -82,9 +82,12 @@ function ChangeLight()
 
     if Light then
         Light = false
-        Events.BroadcastRemote("DisplayLight", Light)
+        Events.BroadcastRemote("DisplayLight", "red")
         print(Light)
         Timer.SetTimeout(function() StartChecking = true end, RedLightKillDelay)
+
+        -- Play RedLight Sound
+        Events.BroadcastRemote("PlaySound", "assets///squid-game/Audio/stopSound.ogg", false)
 
         --Rotate the dolls head 180 degrees smoothly
         GirlDollHead:RotateTo(Rotator(0, 90, 0), 5)
@@ -93,7 +96,10 @@ function ChangeLight()
         StartChecking = false
         Light = true
         print(Light)
-        Events.BroadcastRemote("DisplayLight", Light)
+        Events.BroadcastRemote("DisplayLight", "green")
+
+        -- Play GreenLight Sound
+        Events.BroadcastRemote("PlaySound", "assets///squid-game/Audio/goSound.ogg", false)
 
         --Rotate the dolls head back
         GirlDollHead:RotateTo(Rotator(0, -90, 0), 5)
@@ -117,14 +123,20 @@ function StartEpisode1()
     GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "squid-game::Head_Doll", CollisionType.StaticOnly, false, false)
     GirlDollHead:SetScale(Vector(200,200,200))
     --Place invisible wall
-    InvisibleWallStart = Prop(Vector(-310.0, 0, 24), Rotator(), "squid-game::Invisible_Barrier", CollisionType.StaticOnly, false, false)
+    -- InvisibleWallStart = Prop(Vector(-310.0, 0, 24), Rotator(), "squid-game::Invisible_Barrier", CollisionType.StaticOnly, false, false)
+    -- InvisibleWallStart:SetScale(Vector(4,65,100))
+    InvisibleWallStart = Prop(Vector(-190, 0, 24), Rotator(), "squid-game::Invisible_Barrier", CollisionType.Normal, false, false)
+    InvisibleWallStart:SetScale(Vector(3,64,30))
+    -- TestCub = Prop(Vector(0,0,0), Rotator(), "squid-game::Cube", CollisionType.NoCollision,false, false)
+    -- TestCub:SetScale(Vector(6,64,30))
+    --Place Trigger (TODO)
+    local Trigger = Trigger(Vector(8400,0,1000), Rotator(), Vector(640, 3500, 1000), TriggerType.Box, true)
 
-
-    print("Starting Gamemode Redlight greenlight in 5 seconds")
     Events.BroadcastRemote("DisplayLight", "Starting In 5 Seconds")
 
     Timer.SetTimeout(function ()
-
+        Events.BroadcastRemote("PlaySound", "assets///squid-game/Audio/goSound.ogg", false)
+        -- InvisibleWallStart:Destroy()
         ChangeLight()
     end, 5000)
 end
@@ -146,6 +158,10 @@ Events.Subscribe("PlayersLastLocation", function(player, PlayersLoc)
 end)
 
 --End of gamemode 1
+
+function PlayBackgroundMusic()
+    
+end
 
 --SetVars
 Gamemodes[1] = Gamemode1Loop
