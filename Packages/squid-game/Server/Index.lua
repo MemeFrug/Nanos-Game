@@ -10,17 +10,24 @@ local PlayersWonRound = {}
 
 --Global Functions
 
+function Tablelength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end
+
 -- function SpectateNewPlayer
 
 function SpawnPlayer(player) 
     -- Spawns a Character at position 0, 0, 0 with default's constructor parameters
     local new_character = Character(Vector(-800, 0, 0))
+    -- -800
 
     -- Possess the new Character
     player:Possess(new_character)
 
     --insert into table
-    table.insert(PlayersInMatch, new_character)
+    table.insert(PlayersInMatch, player)
 end
 
 function IndexOf(array, value)
@@ -33,9 +40,9 @@ function IndexOf(array, value)
 end
 
 -- Gamemode 1
-local MinRandomTimeBetweenLights = 2000 --Milliseconds
-local MaxRandomTimeBetweenLights = 10000 -- Milliseconds
-local RedLightKillDelay = 1300
+local MinRandomTimeBetweenLights = 1500 --Milliseconds
+local MaxRandomTimeBetweenLights = 1500 -- Milliseconds
+local RedLightKillDelay = 1500
 local Light = false
 local StartChecking = false
 
@@ -51,31 +58,34 @@ function GetLightRandomTime()
 end
 
 function CheckIfPlayerHasMoved()
-    for i, character in ipairs(PlayersInMatch) do
-        local PlayersLocation = character:GetLocation()
-        local PlayersLastPosition = PlayersLastPos[character:GetPlayer():GetSteamID()]
+    for i, player in ipairs(PlayersInMatch) do
+        local PlayersLocation = player:GetControlledCharacter():GetLocation()
+        if (player:GetControlledCharacter()) then
+        local PlayersLastPosition = PlayersLastPos[player:GetSteamID()]
         if PlayersLastPosition == nil then
             PlayersLastPosition = false
         end
 
         --Were gonna send a raycast to see if the player is visible
-        Events.CallRemote("CheckIfPlayerHasMoved", character:GetPlayer(), 
+        Events.CallRemote("CheckIfPlayerHasMoved", player, 
         {startpos = GirlDollHeadPosition + Vector(-200, 0, 300), endpos = PlayersLocation + Vector(100, 0, 0), PlayersLoc = PlayersLocation, 
-        PlayersLastPos = PlayersLastPosition, character = character, index = i}, true)
-
+        PlayersLastPos = PlayersLastPosition, character = player:GetControlledCharacter()}, true)
+        end
     end
 end
 
-function KillPlayer(i, character)
-    table.remove(PlayersInMatch, i)
-    table.remove(PlayersLastPos, IndexOf(PlayersLastPos, character:GetPlayer():GetSteamID()))
-    table.insert( PlayersSpectating, character:GetPlayer())
+function KillPlayer(player)
+    
+    print(player)
 
-    Events.BroadcastRemote("KillPlayerBomb", character:GetLocation())
+    Events.BroadcastRemote("KillPlayerBomb", player:GetControlledCharacter():GetLocation())
 
-    character:ApplyDamage(1000, '', DamageType.Explosion, Vector(30, 30, 30))
+    player:GetControlledCharacter():ApplyDamage(1000, '', DamageType.Explosion, Vector(30, 30, 30))
 
-    character:GetPlayer():UnPossess()
+    player:UnPossess()
+
+    table.remove(PlayersInMatch, IndexOf(PlayersInMatch, player))
+    table.remove(PlayersLastPos, IndexOf(PlayersLastPos, player:GetSteamID()))
 end
 
 function ChangeLight()
@@ -83,7 +93,6 @@ function ChangeLight()
     if Light then
         Light = false
         Events.BroadcastRemote("DisplayLight", "red")
-        print(Light)
         Timer.SetTimeout(function() StartChecking = true end, RedLightKillDelay)
 
         -- Play RedLight Sound
@@ -95,7 +104,6 @@ function ChangeLight()
         PlayersLastPos = {}
         StartChecking = false
         Light = true
-        print(Light)
         Events.BroadcastRemote("DisplayLight", "green")
 
         -- Play GreenLight Sound
@@ -103,13 +111,6 @@ function ChangeLight()
 
         --Rotate the dolls head back
         GirlDollHead:RotateTo(Rotator(0, -90, 0), 5)
-
-        --TESTING BELOW
-        for i, player in ipairs(PlayersSpectating) do
-            SpawnPlayer(player)
-        end
-        
-        PlayersSpectating = {}
 
     end
 
@@ -123,23 +124,53 @@ function StartEpisode1()
     GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "squid-game::Head_Doll", CollisionType.StaticOnly, false, false)
     GirlDollHead:SetScale(Vector(200,200,200))
     --Place invisible wall
-    -- InvisibleWallStart = Prop(Vector(-310.0, 0, 24), Rotator(), "squid-game::Invisible_Barrier", CollisionType.StaticOnly, false, false)
-    -- InvisibleWallStart:SetScale(Vector(4,65,100))
     InvisibleWallStart = Prop(Vector(-190, 0, 24), Rotator(), "squid-game::Invisible_Barrier", CollisionType.Normal, false, false)
     InvisibleWallStart:SetScale(Vector(3,64,30))
-    -- TestCub = Prop(Vector(0,0,0), Rotator(), "squid-game::Cube", CollisionType.NoCollision,false, false)
-    -- TestCub:SetScale(Vector(6,64,30))
-    --Place Trigger (TODO)
+    
+    --End Round Trigger
     local Trigger = Trigger(Vector(8400,0,1000), Rotator(), Vector(640, 3500, 1000), TriggerType.Box, true)
+
+    Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
+        print(actor_triggering)
+        if (not actor_triggering) then return end
+        if (actor_triggering:GetType() == "Character") then
+            for i,player in ipairs( PlayersInMatch ) do
+                if player:GetControlledCharacter() == actor_triggering then
+                  table.remove( PlayersInMatch, i )
+                  table.insert( PlayersWonRound, player )
+                  table.remove(PlayersLastPos, IndexOf(PlayersLastPos, player:GetSteamID()))
+                  break;
+                end
+              end
+        end
+    end)
+
+    Trigger:Subscribe("EndOverlap", function(trigger, actor_triggering)
+        Package.Log("Something exited my Box Trigger")
+        print(actor_triggering)
+        if (not actor_triggering) then return end
+        print('actor exists')
+        if (actor_triggering:GetType() == "Character") then
+            print("Is an Character")
+            for i,player in ipairs( PlayersWonRound ) do
+                if player:GetControlledCharacter() == actor_triggering then
+                    table.remove( PlayersWonRound, i )
+                    table.insert( PlayersInMatch, player )
+                    break;
+                end
+              end
+        end
+    end)
 
     Events.BroadcastRemote("DisplayLight", "Starting In 5 Seconds")
 
     Timer.SetTimeout(function ()
         Events.BroadcastRemote("PlaySound", "assets///squid-game/Audio/goSound.ogg", false)
-        -- InvisibleWallStart:Destroy()
+        InvisibleWallStart:Destroy()
         ChangeLight()
     end, 5000)
 end
+
 
 function EndEpisode1()
     -- if maingameloop then
@@ -150,6 +181,17 @@ end
 function Gamemode1Loop()
     if StartChecking == true then
         CheckIfPlayerHasMoved()
+    end
+
+    --CheckIfThereAreAnyPlayersLeft
+    if (Tablelength(PlayersInMatch) <= 0 and Light) then
+        EndEpisode1()
+        --TESTING BELOW
+        for i, player in ipairs(PlayersSpectating) do
+            -- KillPlayer(player)
+            
+            SpawnPlayer(player)
+        end 
     end
 end
 
@@ -166,12 +208,17 @@ end
 --SetVars
 Gamemodes[1] = Gamemode1Loop
 
-Events.Subscribe("KillPlayer", function(player, index)
-    -- TODO: Check if has authority
-
+Events.Subscribe("KillPlayer", function(player)
     --Check if player is possessing anything
+
+    NanosUtils.Dump(PlayersInMatch)
+    NanosUtils.Dump(PlayersLastPos)
+    NanosUtils.Dump(PlayersSpectating)
+    NanosUtils.Dump(PlayersWonRound)
+
     if (player:GetControlledCharacter()) then
-        KillPlayer(index, player:GetControlledCharacter())
+        KillPlayer(player)
+        table.insert( PlayersSpectating, player)
     end
 end)
 
@@ -193,8 +240,19 @@ end
 
 -- When Player leaves the server, destroy it's Character
 Player.Subscribe("Destroy", function(player)
-    local character = player:GetControlledCharacter()
-    KillPlayer(IndexOf(PlayersInMatch, character), character)
+    KillPlayer(player)
+
+    --Remove Its Place in the game
+    table.remove( PlayersInMatch, IndexOf(PlayersInMatch, player) )
+    table.remove( PlayersWonRound, IndexOf(PlayersWonRound, player) )
+    table.remove( PlayersLastPos, IndexOf(PlayersLastPos, player:GetSteamID()))
+    table.remove( PlayersSpectating, IndexOf(PlayersLastPos, player))
 end)
 
 StartEpisode1()
+
+--Server Console Commands
+
+Server.Subscribe("debug", function(my_input)
+    Package.Log("Console command received: " .. my_input)
+end)
