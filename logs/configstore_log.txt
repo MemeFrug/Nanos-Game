@@ -242,3 +242,24 @@
 [2021-12-07 20:01:06] Loaded store 'install' from 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf' successfully
 [2021-12-07 20:01:09] Failed to read store 'userlocal' from 'D:\Steam\steamapps\common\nanos-world-server\config\localconfig.vdf.tmp'
 [2021-12-07 20:01:09] Flushed store 'install' to 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf'
+
+
+[2021-12-08 22:14:43] Loaded store 'install' from 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf' successfully
+[2021-12-08 22:14:49] Failed to read store 'userlocal' from 'D:\Steam\steamapps\common\nanos-world-server\config\localconfig.vdf.tmp'
+[2021-12-08 22:14:50] Flushed store 'install' to 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf'
+
+
+[2021-12-08 23:20:25] Loaded store 'install' from 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf' successfully
+[2021-12-08 23:20:28] Failed to read store 'userlocal' from 'D:\Steam\steamapps\common\nanos-world-server\config\localconfig.vdf.tmp'
+[2021-12-08 23:20:28] Flushed store 'install' to 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf'
+
+
+[2021-12-08 23:31:16] Loaded store 'install' from 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf' successfully
+[2021-12-08 23:31:19] Failed to read store 'userlocal' from 'D:\Steam\steamapps\common\nanos-world-server\config\localconfig.vdf.tmp'
+[2021-12-08 23:31:19] Flushed store 'install' to 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf'
+
+
+[2021-12-08 23:38:49] Loaded store 'install' from 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf' successfully
+[2021-12-08 23:38:52] Flushed store 'install' to 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf'
+[2021-12-08 23:38:52] Failed to read store 'userlocal' from 'D:\Steam\steamapps\common\nanos-world-server\config\localconfig.vdf.tmp'
+[2021-12-08 23:38:53] Flushed store 'install' to 'D:\Steam\steamapps\common\nanos-world-server\config\config.vdf'

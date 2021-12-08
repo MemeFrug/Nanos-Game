@@ -232,3 +232,22 @@
 [2021-12-07 20:01:06] Inilializing System Manager
 [2021-12-07 20:01:06] Suspend inhibited
 [2021-12-07 21:36:03] Suspend inhibit released
+
+
+[2021-12-08 22:14:43] Inilializing System Manager
+[2021-12-08 22:14:43] Suspend inhibited
+[2021-12-08 23:20:15] Suspend inhibit released
+
+
+[2021-12-08 23:20:25] Inilializing System Manager
+[2021-12-08 23:20:25] Suspend inhibited
+[2021-12-08 23:31:08] Suspend inhibit released
+
+
+[2021-12-08 23:31:16] Inilializing System Manager
+[2021-12-08 23:31:16] Suspend inhibited
+[2021-12-08 23:38:42] Suspend inhibit released
+
+
+[2021-12-08 23:38:49] Inilializing System Manager
+[2021-12-08 23:38:49] Suspend inhibited

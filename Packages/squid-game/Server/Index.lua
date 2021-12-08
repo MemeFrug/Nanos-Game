@@ -27,7 +27,14 @@ function SpawnPlayer(player)
     player:Possess(new_character)
 
     --insert into table
-    table.insert(PlayersInMatch, player)
+    if (IndexOf(PlayersSpectating, player)) then
+        table.remove(PlayersSpectating, IndexOf(PlayersSpectating, player))
+    end
+    if (Gamemode == 1) then
+        table.insert(PlayersInMatch, player) 
+    else 
+        table.insert( PlayersSpectating, player)
+    end
 end
 
 function IndexOf(array, value)
@@ -40,11 +47,13 @@ function IndexOf(array, value)
 end
 
 -- Gamemode 1
-local MinRandomTimeBetweenLights = 1500 --Milliseconds
-local MaxRandomTimeBetweenLights = 1500 -- Milliseconds
+local MinRandomTimeBetweenLights = 2000 --Milliseconds
+local MaxRandomTimeBetweenLights = 10000 -- Milliseconds
 local RedLightKillDelay = 1500
 local Light = false
 local StartChecking = false
+
+local ChangeLightTimeout;
 
 local GirlDollHead;
 
@@ -115,12 +124,16 @@ function ChangeLight()
     end
 
     local RandomTime = GetLightRandomTime()
-    Timer.SetTimeout(ChangeLight, RandomTime)
+    ChangeLightTimeout = Timer.SetTimeout(ChangeLight, RandomTime)
 
     -- EndEpisode1()
 end
 
+local TriggerEpisode1;
+
 function StartEpisode1()
+    Light = false
+
     GirlDollHead = Prop(GirlDollHeadPosition, Rotator(0, -90, 0), "squid-game::Head_Doll", CollisionType.StaticOnly, false, false)
     GirlDollHead:SetScale(Vector(200,200,200))
     --Place invisible wall
@@ -128,9 +141,9 @@ function StartEpisode1()
     InvisibleWallStart:SetScale(Vector(3,64,30))
     
     --End Round Trigger
-    local Trigger = Trigger(Vector(8400,0,1000), Rotator(), Vector(640, 3500, 1000), TriggerType.Box, true)
+    TriggerEpisode1 = Trigger(Vector(8400,0,1000), Rotator(), Vector(640, 3500, 1000), TriggerType.Box, true)
 
-    Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
+    TriggerEpisode1:Subscribe("BeginOverlap", function(trigger, actor_triggering)
         print(actor_triggering)
         if (not actor_triggering) then return end
         if (actor_triggering:GetType() == "Character") then
@@ -145,7 +158,7 @@ function StartEpisode1()
         end
     end)
 
-    Trigger:Subscribe("EndOverlap", function(trigger, actor_triggering)
+    TriggerEpisode1:Subscribe("EndOverlap", function(trigger, actor_triggering)
         Package.Log("Something exited my Box Trigger")
         print(actor_triggering)
         if (not actor_triggering) then return end
@@ -164,7 +177,7 @@ function StartEpisode1()
 
     Events.BroadcastRemote("DisplayLight", "Starting In 5 Seconds")
 
-    Timer.SetTimeout(function ()
+    ChangeLightTimeout = Timer.SetTimeout(function ()
         Events.BroadcastRemote("PlaySound", "assets///squid-game/Audio/goSound.ogg", false)
         InvisibleWallStart:Destroy()
         ChangeLight()
@@ -173,9 +186,17 @@ end
 
 
 function EndEpisode1()
-    -- if maingameloop then
-    --     Timer.ClearInterval(maingameloop)
-    -- end
+    TriggerEpisode1:Unsubscribe("BeginOverlap")
+    TriggerEpisode1:Unsubscribe("EndOverlap")
+    TriggerEpisode1:Destroy()
+
+    Gamemode = 1
+
+    Timer.ClearTimeout(ChangeLightTimeout)
+
+    GirlDollHead:Destroy()
+
+    PlayNextRound()
 end
 
 function Gamemode1Loop()
@@ -186,12 +207,6 @@ function Gamemode1Loop()
     --CheckIfThereAreAnyPlayersLeft
     if (Tablelength(PlayersInMatch) <= 0 and Light) then
         EndEpisode1()
-        --TESTING BELOW
-        for i, player in ipairs(PlayersSpectating) do
-            -- KillPlayer(player)
-            
-            SpawnPlayer(player)
-        end 
     end
 end
 
@@ -205,16 +220,55 @@ function PlayBackgroundMusic()
     
 end
 
+function PlayNextRound()
+    PlayersInMatch = PlayersWonRound
+    PlayersWonRound = {}
+
+    if (Tablelength(PlayersInMatch) <= 1) then
+        PlayersInMatch = {}
+        PlayersLastPos = {}
+        FinishGame()
+        return
+    end
+
+    --Pick A random number between available gamemodes
+    Gamemode = math.random(2, Tablelength(Gamemodes))
+    Package.Log(Gamemode)
+end
+
+function StartGame()
+    for i, player in ipairs(PlayersSpectating) do
+        SpawnPlayer(player)
+        Gamemode = 2 -- Debug
+        StartEpisode1() -- Debug
+    end
+end
+
+function FinishGame()
+    --Display Winner
+    --Start Game again
+    StartGame()
+end
+
+function PreRoundUpdate()
+    if (GetAmountOfPeoplePlaying() >= 1) then
+        Gamemode = 2 -- Debug
+        StartEpisode1() -- Debug
+    end
+end
+
+function GetAmountOfPeoplePlaying()
+    local b = Tablelength(PlayersSpectating)
+    local a = Tablelength(PlayersInMatch)
+    return a+b
+end
+
 --SetVars
-Gamemodes[1] = Gamemode1Loop
+Gamemodes[1] = PreRoundUpdate
+Gamemodes[2] = Gamemode1Loop
 
 Events.Subscribe("KillPlayer", function(player)
     --Check if player is possessing anything
-
-    NanosUtils.Dump(PlayersInMatch)
-    NanosUtils.Dump(PlayersLastPos)
-    NanosUtils.Dump(PlayersSpectating)
-    NanosUtils.Dump(PlayersWonRound)
 
     if (player:GetControlledCharacter()) then
         KillPlayer(player)
@@ -249,10 +303,31 @@ Player.Subscribe("Destroy", function(player)
     table.remove( PlayersSpectating, IndexOf(PlayersLastPos, player))
 end)
 
-StartEpisode1()
-
 --Server Console Commands
 
-Server.Subscribe("debug", function(my_input)
-    Package.Log("Console command received: " .. my_input)
+local Commands = {
+    {string = "Tables", command = function ()
+        Package.Log("InMatch: " .. NanosUtils.Dump(PlayersInMatch))
+        Package.Log("LastPos: " .. NanosUtils.Dump(PlayersLastPos))
+        Package.Log("Spectating: " .. NanosUtils.Dump(PlayersSpectating))
+        Package.Log("WonRound: " .. NanosUtils.Dump(PlayersWonRound))
+    end},    
+    {string = "kick", command = function ()
+        Package.Log("Kicking/Banning Player")
+    end},
+}
+
+Server.Subscribe("Console", function(my_input)
+    local IsanCommand = false
+
+    for i, command in ipairs(Commands) do
+        if (my_input == command.string) then
+            IsanCommand = true
+            command.command()
+        end
+    end
+
+    if (not IsanCommand) then
+        Package.Error("Command Not Found")
+    end
 end)
