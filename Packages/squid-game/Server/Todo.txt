@@ -1,0 +1,5 @@
+Create a function that replaces the character in most tables and adds him to the defined new one
+
+Test Out new thing that i did yesterday that kills people
+
+Continue on the coroutine thingy

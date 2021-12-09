@@ -8,8 +8,22 @@ local PlayersInMatch = {}
 local PlayersSpectating = {}
 local PlayersWonRound = {}
 
---Global Functions
+function Wait(seconds)
+    local start = os.time()
+    repeat until os.time() > start + seconds
+    return true
+end
 
+function WaitTill(isTrue, trueorfalse)
+    if (trueorfalse) then
+        repeat until isTrue
+    else 
+        repeat until not isTrue
+    end
+    return isTrue
+end
+
+--Global Functions
 function Tablelength(T)
     local count = 0
     for _ in pairs(T) do count = count + 1 end
@@ -53,6 +67,8 @@ local RedLightKillDelay = 1500
 local Light = false
 local StartChecking = false
 
+local KillingPlayers = false
+
 local ChangeLightTimeout;
 
 local GirlDollHead;
@@ -60,6 +76,7 @@ local GirlDollHead;
 local GirlDollHeadPosition = Vector(7980, 90, 0)
 
 local PlayersLastPos = {}
+local PeopleToKill = {}
 
 function GetLightRandomTime()
     math.randomseed(os.time())
@@ -70,23 +87,20 @@ function CheckIfPlayerHasMoved()
     for i, player in ipairs(PlayersInMatch) do
         local PlayersLocation = player:GetControlledCharacter():GetLocation()
         if (player:GetControlledCharacter()) then
-        local PlayersLastPosition = PlayersLastPos[player:GetSteamID()]
-        if PlayersLastPosition == nil then
-            PlayersLastPosition = false
-        end
+            local PlayersLastPosition = PlayersLastPos[player:GetSteamID()]
+            if PlayersLastPosition == nil then
+                PlayersLastPosition = false
+            end
 
-        --Were gonna send a raycast to see if the player is visible
-        Events.CallRemote("CheckIfPlayerHasMoved", player, 
-        {startpos = GirlDollHeadPosition + Vector(-200, 0, 300), endpos = PlayersLocation + Vector(100, 0, 0), PlayersLoc = PlayersLocation, 
-        PlayersLastPos = PlayersLastPosition, character = player:GetControlledCharacter()}, true)
+            --Were gonna send a raycast to see if the player is visible
+            Events.CallRemote("CheckIfPlayerHasMoved", player, 
+            {startpos = GirlDollHeadPosition + Vector(-200, 0, 300), endpos = PlayersLocation + Vector(100, 0, 0), PlayersLoc = PlayersLocation, 
+            PlayersLastPos = PlayersLastPosition, character = player:GetControlledCharacter()}, true)
         end
     end
 end
 
 function KillPlayer(player)
-    
-    print(player)
-
     Events.BroadcastRemote("KillPlayerBomb", player:GetControlledCharacter():GetLocation())
 
     player:GetControlledCharacter():ApplyDamage(1000, '', DamageType.Explosion, Vector(30, 30, 30))
@@ -98,6 +112,7 @@ function KillPlayer(player)
 end
 
 function ChangeLight()
+    WaitTill(KillingPlayers, false)
 
     if Light then
         Light = false
@@ -130,6 +145,7 @@ function ChangeLight()
 end
 
 local TriggerEpisode1;
+local InvisibleWallStart;
 
 function StartEpisode1()
     Light = false
@@ -141,7 +157,7 @@ function StartEpisode1()
     InvisibleWallStart:SetScale(Vector(3,64,30))
     
     --End Round Trigger
-    TriggerEpisode1 = Trigger(Vector(8400,0,1000), Rotator(), Vector(640, 3500, 1000), TriggerType.Box, true)
+    TriggerEpisode1 = Trigger(Vector(8400,0,1000), Rotator(), Vector(640, 3500, 1000), TriggerType.Box, false)
 
     TriggerEpisode1:Subscribe("BeginOverlap", function(trigger, actor_triggering)
         print(actor_triggering)
@@ -199,6 +215,17 @@ function EndEpisode1()
     PlayNextRound()
 end
 
+local KillPlayers = coroutine.create(function ()
+    while Wait(1) and Tablelength(PeopleToKill) >= 1 do
+        print("In Wiat: " .. NanosUtils.Dump(PeopleToKill))
+        local player = PeopleToKill[1]
+        table.insert( PlayersSpectating, player)
+        table.remove( PeopleToKill, IndexOf(PeopleToKill, player))
+        KillPlayer(player)
+    end
+    PeopleToKill = false
+end)
+
 function Gamemode1Loop()
     if StartChecking == true then
         CheckIfPlayerHasMoved()
@@ -208,10 +235,24 @@ function Gamemode1Loop()
     if (Tablelength(PlayersInMatch) <= 0 and Light) then
         EndEpisode1()
     end
+
+
+    if (Tablelength(PeopleToKill) >= 1) then
+        PeopleToKill = true
+
+        coroutine.resume(KillPlayers)
+    end
 end
 
 Events.Subscribe("PlayersLastLocation", function(player, PlayersLoc)
     PlayersLastPos[player:GetSteamID()] = PlayersLoc
+end)
+
+Events.Subscribe("KillPlayerRayCast", function(player)
+    --Check if player is possessing anything
+    if (player:GetControlledCharacter()) then
+        table.insert(PeopleToKill, player)
+    end
 end)
 
 --End of gamemode 1
@@ -221,33 +262,33 @@ function PlayBackgroundMusic()
 end
 
 function PlayNextRound()
-    PlayersInMatch = PlayersWonRound
-    PlayersWonRound = {}
-
-    if (Tablelength(PlayersInMatch) <= 1) then
+    if (Tablelength(PlayersWonRound) == 1) then
         PlayersInMatch = {}
         PlayersLastPos = {}
         FinishGame()
         return
+    elseif (Tablelength(PlayersWonRound) <= 0 and Tablelength(PlayersInMatch) == 0) then
+        StartGame(1)
+        return
     end
 
     --Pick A random number between available gamemodes
-    Gamemode = math.random(2, Tablelength(Gamemodes))
-    Package.Log(Gamemode)
+    local gamemode = math.random(2, Tablelength(Gamemodes))
+    print("line 236: " .. gamemode)
+    StartGame(gamemode)
 end
 
-function StartGame()
+function StartGame(gamemode)
     for i, player in ipairs(PlayersSpectating) do
         SpawnPlayer(player)
-        Gamemode = 2 -- Debug
-        StartEpisode1() -- Debug
+        Gamemode = gamemode
     end
 end
 
 function FinishGame()
     --Display Winner
     --Start Game again
-    StartGame()
+    Server.ReloadPackage("squid-game")
 end
 
 function PreRoundUpdate()
@@ -266,15 +307,6 @@ end
 --SetVars
 Gamemodes[1] = PreRoundUpdate
 Gamemodes[2] = Gamemode1Loop
-
-Events.Subscribe("KillPlayer", function(player)
-    --Check if player is possessing anything
-
-    if (player:GetControlledCharacter()) then
-        KillPlayer(player)
-        table.insert( PlayersSpectating, player)
-    end
-end)
 
 -- Main Server Loop
 Server.Subscribe("Tick", function(delta)
@@ -311,9 +343,16 @@ local Commands = {
         Package.Log("LastPos: " .. NanosUtils.Dump(PlayersLastPos))
         Package.Log("Spectating: " .. NanosUtils.Dump(PlayersSpectating))
         Package.Log("WonRound: " .. NanosUtils.Dump(PlayersWonRound))
+        Package.Log("PeopleToKill: " .. NanosUtils.Dump(PeopleToKill))
     end},    
     {string = "kick", command = function ()
         Package.Log("Kicking/Banning Player")
+    end},
+    {string = "end", command = function ()
+        Server.Stop()
+    end},
+    {string = "die", command = function ()
+        Server.Stop()
     end},
 }
 

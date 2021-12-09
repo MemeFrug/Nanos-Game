@@ -47,7 +47,7 @@ Events.Subscribe("CheckIfPlayerHasMoved", function (params, debug)
         print(params.PlayersLastPos)
         if (params.PlayersLastPos) then
             if (params.PlayersLastPos ~= params.PlayersLoc) then
-                Events.CallRemote("KillPlayer")
+                Events.CallRemote("KillPlayerRayCast")
             end
         else 
             print("Calling PlayersLastLocation")
